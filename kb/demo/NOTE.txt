@@ -1,0 +1,32 @@
+KB demo - note operative
+
+Corpus (corpus/): testi ufficiali in italiano da EUR-Lex
+- GDPR   Regolamento (UE) 2016/679
+- NIS2   Direttiva (UE) 2022/2555
+- AI Act Regolamento (UE) 2024/1689
+Fonte: EUR-Lex, https://eur-lex.europa.eu - © Unione europea. Riutilizzo
+consentito con indicazione della fonte (decisione 2011/833/UE). Fanno fede
+solo i testi pubblicati nella Gazzetta ufficiale dell'Unione europea.
+
+L'identificativo del documento (GDPR, NIS2, AI Act) viene ricavato dal numero
+dell'atto tramite "atti" in kb.json: il nome del file è libero.
+
+Validazione
+- golden_set.csv: 17 domande con documento e articolo attesi e una risposta
+  di riferimento per la revisione umana.
+- negative_set.csv: 5 domande fuori dominio, alcune volutamente vicine al tema
+  (norme ISO, Cyber Resilience Act). Risposta attesa:
+  "Non trovo questa informazione nei documenti."
+- I due CSV non vengono mai modificati dalla pipeline: i risultati di ogni
+  esecuzione vanno in report/ con KB e timestamp nel nome.
+
+Controlli dopo il passo 2 (report di chunking), valori attesi:
+- GDPR:   173 considerando, 99 articoli
+- NIS2:   144 considerando, 46 articoli, 3 allegati
+- AI Act: 180 considerando, 113 articoli, 13 allegati
+
+Scelte di configurazione (kb.json)
+- estrai_tabelle = false: nei PDF EUR-Lex la versione "colonna: valore"
+  delle tabelle duplicherebbe il testo degli allegati.
+- max_caratteri_chunk = 6000: oltre questa soglia articoli e allegati sono
+  divisi per paragrafo/punto/lettera, ripetendo l'intestazione.

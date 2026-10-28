@@ -1,0 +1,6 @@
+id,domanda,nota
+NEG001,Qual è l'aliquota IVA ordinaria in Italia?,Fiscalità nazionale: non trattata nei tre atti
+NEG002,Quanto costa e quanto dura una certificazione ISO/IEC 27001?,Le norme ISO non fanno parte del corpus: nessuna informazione su costi e tempi di certificazione
+NEG003,Che obblighi prevede il Cyber Resilience Act per i produttori di software?,Altro regolamento UE non presente nel corpus: domanda vicina al dominio per mettere alla prova il rifiuto
+NEG004,Qual è la pena prevista dal codice penale italiano per l'accesso abusivo a un sistema informatico?,Diritto penale nazionale: non trattato nei tre atti
+NEG005,Chi è l'attuale presidente del Garante per la protezione dei dati personali?,Informazione di fatto non contenuta nei testi normativi

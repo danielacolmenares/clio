@@ -1,0 +1,26 @@
+# Servizi per l'esecuzione locale: Qdrant + Ollama.
+# Le porte sono pubblicate solo su 127.0.0.1.
+#
+#   docker compose up -d
+#   docker compose exec ollama ollama pull bge-m3
+#   docker compose exec ollama ollama pull gemma3:4b
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.13.4
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant_dati:/qdrant/storage
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:0.6.5
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_modelli:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  qdrant_dati:
+  ollama_modelli:

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clio"
+version = "0.1.0"
+description = "Clio – assistente che risponde sui documenti e cita sempre le fonti"
+requires-python = ">=3.10"
+dependencies = ["pdfplumber>=0.11", "python-docx>=1.1"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["clio", "clio.profili"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

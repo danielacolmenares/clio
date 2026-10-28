@@ -1,0 +1,15 @@
+{
+  "descrizione": "KB dimostrativa: GDPR (Reg. UE 2016/679), NIS2 (Dir. UE 2022/2555), AI Act (Reg. UE 2024/1689), testi italiani da EUR-Lex.",
+  "profilo_chunking": "legislativo_ue",
+  "estrai_tabelle": false,
+  "considerando_per_chunk": 10,
+  "max_caratteri_chunk": 6000,
+  "golden_set": "golden_set.csv",
+  "negative_set": "negative_set.csv",
+  "atti": {
+    "2016/679": "GDPR",
+    "2022/2555": "NIS2",
+    "2024/1689": "AI Act"
+  },
+  "documenti": {}
+}

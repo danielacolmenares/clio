@@ -1,0 +1,19 @@
+# Derivati della pipeline (rigenerabili)
+testo_estratto/
+chunk/
+embedding/
+report/
+log/
+sessioni/
+
+# Segreti e configurazione locale
+.env
+*.htpasswd
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
