@@ -7,6 +7,7 @@ la sostituiscono con monkeypatch e non toccano mai la rete.
 from __future__ import annotations
 
 import json
+import os
 import logging
 import time
 import urllib.error
@@ -18,7 +19,13 @@ log = logging.getLogger("clio.clienti")
 
 MAX_TENTATIVI = 3
 TIMEOUT_EMBED = 120
-TIMEOUT_LLM = 180
+# Su sola CPU una risposta puo' superare i 3 minuti: valore modificabile con CLIO_TIMEOUT_LLM.
+TIMEOUT_LLM = float(os.environ.get("CLIO_TIMEOUT_LLM", "600"))
+# Finestra di contesto del modello, in token. Va dichiarata: il valore
+# predefinito di Ollama e' piu' piccolo del prompt con tre articoli lunghi, e
+# in quel caso Ollama taglia l'INIZIO del prompt, cioe' proprio le regole.
+# Modificabile con CLIO_NUM_CTX.
+NUM_CTX = int(os.environ.get("CLIO_NUM_CTX", "8192"))
 TIMEOUT_QDRANT = 60
 NON_TROVATO = {"status": "not_found", "http_code": 404}
 
@@ -88,7 +95,7 @@ def ollama_generate(prompt: str, modello: str | None = None) -> str:
             "model": modello or config.modello_llm(),
             "prompt": prompt,
             "stream": False,
-            "options": {"temperature": 0, "seed": 42},
+            "options": {"temperature": 0, "seed": 42, "num_ctx": NUM_CTX},
         },
         timeout=TIMEOUT_LLM,
     )

@@ -52,7 +52,7 @@ class App:
     """Logica HTTP indipendente dal server: testabile senza socket."""
 
     def __init__(self, kb: KB, utenti: dict[str, str] | None, rispondi=None,
-                 top_k: int = risposta.TOP_K, versione_prompt: str = "A", modello: str | None = None):
+                 top_k: int = risposta.TOP_K, versione_prompt: str = "C", modello: str | None = None):
         self.kb = kb
         self.utenti = utenti            # None = autenticazione disattivata
         self.rispondi = rispondi or risposta.rispondi
@@ -192,7 +192,7 @@ def e_loopback(host: str) -> bool:
 
 
 def avvia(kb: KB, host: str = "127.0.0.1", porta: int = 8080, senza_autenticazione: bool = False,
-          versione_prompt: str = "A") -> None:
+          versione_prompt: str = "C") -> None:
     if senza_autenticazione:
         if not e_loopback(host):
             raise SystemExit("--senza-autenticazione e' ammesso solo su un indirizzo di loopback.")

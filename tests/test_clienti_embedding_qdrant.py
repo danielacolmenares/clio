@@ -63,7 +63,7 @@ def test_ollama_generate_deterministico(servizi):
     assert clienti.ollama_generate("ciao", "m:1") == "Risposta [GDPR, art. 4]."
     _, url, corpo = servizi.chiamate[-1]
     assert url == "http://127.0.0.1:11434/api/generate"
-    assert corpo["options"] == {"temperature": 0, "seed": 42}
+    assert corpo["options"] == {"temperature": 0, "seed": 42, "num_ctx": 8192}
     assert corpo["stream"] is False and corpo["model"] == "m:1"
 
 

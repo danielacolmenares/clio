@@ -65,7 +65,50 @@ Per documenti aziendali (procedure, policy, manuali) c'è il profilo `sezioni_nu
 
 ## Validazione
 
-**Demo.** `kb/demo/golden_set.csv` contiene 17 domande con documento e articolo attesi e una risposta di riferimento. `kb/demo/negative_set.csv` contiene 5 domande fuori dominio, per esempio sulle norme ISO o sul Cyber Resilience Act, che *non* sono nel corpus. Il passo 5 misura in che posizione arriva il passaggio giusto (OK / PARZIALE / FALLITO). Il passo 6 produce un CSV per la revisione umana e conta i rifiuti corretti.
+Il metodo: un **Golden Set** di 17 domande con documento e articolo attesi e una risposta di riferimento, e un **Negative Set** di 5 domande fuori dominio, alcune volutamente vicine al tema (norme ISO, Cyber Resilience Act), per cui l'unica risposta giusta è "non lo so". Ogni risposta viene letta e valutata a mano.
+
+### Risultati sulla demo (GDPR, NIS2, AI Act)
+
+Misurati il 28 e 29 ottobre 2026 su un PC portatile, **solo processore**, con `bge-m3` e `gemma3:4b`. Tutti i file sono in [`docs/risultati-demo/`](docs/risultati-demo/).
+
+**Recupero (passo 5)**: il documento giusto arriva sempre per primo; l'articolo giusto arriva
+
+| primo | entro i primi 3 | entro i primi 5 |
+|---|---|---|
+| **88%** (15/17) | 94% | **100%** |
+
+Nei 2 casi restanti l'articolo giusto è al secondo posto (AI Act art. 50) e al quarto (NIS2 art. 21), e al primo c'è un considerando che spiega proprio quell'articolo.
+
+**Risposte (passo 6)**, prompt C, versione definitiva:
+
+| | Risultato |
+|---|---|
+| Domande fuori dominio rifiutate con la frase esatta | **5 su 5** |
+| Risposte inventate | **0** |
+| Risposte corrette | **12 su 17** |
+| Risposte corrette ma incomplete | 5 su 17 |
+| Risposte sbagliate | **0** |
+| Citazioni di fonti non fornite | **0** |
+| Tempo per risposta (solo CPU) | mediana circa 3,8 minuti |
+
+Le 5 risposte incomplete dicono cose giuste ma non tutto: per esempio, sulla NIS2 riporta l'obbligo di notifica ma non le scadenze di 24 ore, 72 ore e un mese. Il dettaglio domanda per domanda è in [`docs/risultati-demo/README.md`](docs/risultati-demo/README.md).
+
+### Come ci si è arrivati: un difetto invisibile
+
+Il primo giro aveva dato risultati deludenti. Una risposta fuori dominio inventava la durata della certificazione ISO 27001 con una citazione inesistente, un'altra aggiungeva l'aliquota IVA presa "da fuori", e l'importo delle sanzioni dell'AI Act era sbagliato. Un prompt più rigido (C) aveva tolto le invenzioni, ma il modello era diventato così prudente da negare informazioni che aveva davanti.
+
+Leggendo le risposte una per una sono emerse frasi interrotte a metà. La causa: Clio non dichiarava a Ollama la **finestra di contesto**, che restava a 4.096 token, mentre un prompt con tre articoli lunghi arriva a circa 6.000. In quel caso Ollama **taglia l'inizio del prompt, cioè proprio le regole** (nei log: 32 avvisi `truncating input prompt`, per esempio da 4.165 a 2.051 token). Nessun errore, risposte all'apparenza normali: il modello semplicemente non vedeva le istruzioni.
+
+Con la finestra impostata a 8.192 token (`CLIO_NUM_CTX`) e zero tagli nei log, lo stesso modello è passato da 4 risposte sbagliate e 2 rifiuti esatti su 5 a **0 sbagliate e 5 rifiuti su 5**.
+
+| | Prompt A, contesto tagliato | Prompt C, contesto tagliato | **Prompt C, contesto corretto** |
+|---|---|---|---|
+| Rifiuti esatti fuori dominio | 1/5 | 2/5 | **5/5** |
+| Risposte inventate | 1 | 0 | **0** |
+| Corrette / incomplete / sbagliate | ~12 / 3 / 1 + 1 tempo scaduto | 9 / 4 / 4 | **12 / 5 / 0** |
+| Determinismo (due esecuzioni) | – | 22/22 identiche | – |
+
+I risultati con il contesto tagliato restano pubblicati in `docs/risultati-demo/contesto-tagliato/`, perché mostrano quanto conta misurare: senza leggere ogni risposta, il difetto non sarebbe mai emerso.
 
 **Progetto originale.** Clio nasce da un assistente che ho sviluppato su 62 documenti di un sistema di gestione aziendale (sicurezza delle informazioni, privacy, qualità), che non sono pubblicati. Lì:
 
@@ -75,7 +118,7 @@ Per documenti aziendali (procedure, policy, manuali) c'è il profilo `sezioni_nu
 - **nessuna risposta inventata** sulle domande fuori dominio
 - l'interfaccia è stata provata da un gruppo di colleghi
 
-**Una cosa imparata lì:** il punteggio di somiglianza non basta a riconoscere le domande fuori dominio, perché i punteggi delle domande valide e di quelle fuori tema si sovrappongono. I rifiuti corretti li ottiene l'istruzione data al modello, non una soglia. Per questo la soglia `CLIO_MIN_SCORE` esiste ma è spenta di default.
+**Una cosa imparata nel progetto originale:** il punteggio di somiglianza non basta a riconoscere le domande fuori dominio, perché i punteggi delle domande valide e di quelle fuori tema si sovrappongono. I rifiuti corretti li ottiene l'istruzione data al modello, non una soglia. Per questo la soglia `CLIO_MIN_SCORE` esiste ma è spenta di default.
 
 ## Avvio in locale
 
@@ -91,13 +134,13 @@ docker compose exec ollama ollama pull gemma3:4b
 
 python -m clio.cli tutto --kb demo                    # passi 1-4
 python -m clio.cli retrieval --kb demo --top-k 5      # passo 5 sul Golden Set
-python -m clio.cli risposta --kb demo --set entrambi  # passo 6 su Golden e Negative Set
+python -m clio.cli risposta --kb demo --set entrambi  # passo 6 su Golden e Negative Set (prompt C)
 
 python -m clio.cli utente <nome>                      # crea un utente per la chat
 python -m clio.cli web --kb demo                      # http://127.0.0.1:8080
 ```
 
-Configurazione con variabili d'ambiente: `OLLAMA_URL`, `QDRANT_URL`, `CLIO_EMBED_MODEL`, `CLIO_LLM_MODEL`, `CLIO_MIN_SCORE`, `CLIO_UTENTI_FILE`.
+Configurazione con variabili d'ambiente: `OLLAMA_URL`, `QDRANT_URL`, `CLIO_EMBED_MODEL`, `CLIO_LLM_MODEL`, `CLIO_NUM_CTX` (finestra di contesto, predefinita 8192), `CLIO_TIMEOUT_LLM`, `CLIO_MIN_SCORE`, `CLIO_UTENTI_FILE`.
 
 **Una nuova Knowledge Base** è una cartella `kb/<nome>/` con i documenti in `corpus/` e un `kb.json` che indica il profilo di divisione. Il codice non cambia.
 
@@ -110,7 +153,7 @@ Configurazione con variabili d'ambiente: `OLLAMA_URL`, `QDRANT_URL`, `CLIO_EMBED
 
 ## Test
 
-**123 test automatici**, che non toccano la rete (un controllo nei test la blocca): estrazione da PDF e DOCX veri generati nei test, divisione per articoli con testo nello stile di EUR-Lex (note, intestazioni, articoli a cavallo di pagina), client Ollama e Qdrant simulati, valutazione, risposta e rifiuto, autenticazione della chat, flusso completo da riga di comando.
+**125 test automatici**, che non toccano la rete (un controllo nei test la blocca): estrazione da PDF e DOCX veri generati nei test, divisione per articoli con testo nello stile di EUR-Lex (note, intestazioni, articoli a cavallo di pagina), client Ollama e Qdrant simulati, valutazione, risposta e rifiuto, autenticazione della chat, flusso completo da riga di comando.
 
 ```bash
 python -m pytest -q

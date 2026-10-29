@@ -92,14 +92,48 @@ DOMANDA: {domanda}
 
 RISPOSTA:"""
 
-PROMPT = {"A": PROMPT_A, "B": PROMPT_B}
+PROMPT_C = """Sei Clio, un assistente che risponde a domande sui documenti di una base documentale.
+
+REGOLA PRINCIPALE: usi SOLO le fonti qui sotto. Non aggiungi mai fatti, numeri,
+date, importi o nomi che non compaiono nelle fonti, anche se li conosci.
+
+PRIMA DI RISPONDERE, CONTROLLA:
+1. Le fonti parlano proprio dell'argomento chiesto (la stessa norma, lo stesso
+   ente, lo stesso tema)? Un argomento simile non basta: per esempio i
+   certificati previsti da un regolamento non sono la certificazione ISO, e un
+   regolamento non sostituisce un'altra legge che non compare nelle fonti.
+2. Se la risposta non c'è, scrivi SOLO la frase "{frase}"
+   senza nient'altro: niente spiegazioni, niente riassunti, niente
+   informazioni prese altrove.
+
+QUANDO RISPONDI:
+- Numeri, importi, percentuali e termini: copiali dal paragrafo che risponde
+  esattamente alla domanda. Se l'articolo indica valori diversi per casi
+  diversi, scegli quello del caso chiesto e dillo.
+- Cita usando ESATTAMENTE l'etichetta tra parentesi quadre dell'intestazione
+  della fonte, compreso il nome del documento (es. [AI Act, art. 26], non
+  [GDPR, art. 26] se la fonte e' l'AI Act). Non citare fonti che non sono qui.
+
+ESEMPIO DI DOMANDA FUORI DALLE FONTI
+Domanda: Qual e' la capitale della Francia?
+Risposta: {frase}
+
+FONTI RECUPERATE:
+
+{blocchi}
+
+DOMANDA: {domanda}
+
+RISPOSTA:"""
+
+PROMPT = {"A": PROMPT_A, "B": PROMPT_B, "C": PROMPT_C}
 
 
 # ----------------------------------------------------------------------
 # Prompt e citazioni
 # ----------------------------------------------------------------------
 
-def costruisci_prompt(domanda: str, chunk: list[dict], versione: str = "A") -> str:
+def costruisci_prompt(domanda: str, chunk: list[dict], versione: str = "C") -> str:
     if versione not in PROMPT:
         raise ValueError(f"Versione prompt sconosciuta: '{versione}' (ammesse: {', '.join(PROMPT)})")
     blocchi = []
@@ -198,7 +232,7 @@ def citazioni_non_recuperate(testo: str, fonti: list[dict]) -> list[str]:
 # Risposta a una domanda (usata anche dall'interfaccia web)
 # ----------------------------------------------------------------------
 
-def rispondi(kb: KB, domanda: str, top_k: int = TOP_K, versione_prompt: str = "A",
+def rispondi(kb: KB, domanda: str, top_k: int = TOP_K, versione_prompt: str = "C",
              modello: str | None = None, min_score: float | None = None) -> dict:
     inizio = time.perf_counter()
     risultati, t_emb, t_q = cerca(kb, domanda, top_k)
@@ -306,7 +340,7 @@ def riepilogo(righe: list[dict], tipo_set: str) -> list[str]:
     return out
 
 
-def esegui(kb: KB, quale: str = "entrambi", versione_prompt: str = "A",
+def esegui(kb: KB, quale: str = "entrambi", versione_prompt: str = "C",
            modello: str | None = None, top_k: int = TOP_K) -> int:
     modello = modello or config.modello_llm()
     versione_prompt = versione_prompt.upper()

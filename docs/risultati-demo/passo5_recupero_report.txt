@@ -1,0 +1,148 @@
+======================================================================
+RETRIEVAL - VALUTAZIONE SU GOLDEN SET (KB: demo)
+Eseguito il: 2026-10-28 15:40:15
+======================================================================
+
+CONFIGURAZIONE
+----------------------------------------------------------------------
+Modello embedding: bge-m3
+Collection: clio_demo
+Top-K: 5
+Risultati dettagliati: retrieval_results_demo_20261028_154013.csv
+
+HIT RATE (documento + sezione)
+----------------------------------------------------------------------
+Top-1: 88.2%
+Top-3: 94.1%
+Top-5: 100.0%
+
+HIT RATE (solo documento, diagnostica)
+----------------------------------------------------------------------
+Top-1: 100.0%
+Top-3: 100.0%
+Top-5: 100.0%
+
+ESITI
+----------------------------------------------------------------------
+Domande: 17
+OK (match esatto al primo posto): 15 (88.2%)
+PARZIALE (trovato ma non al primo posto): 2 (11.8%)
+FALLITO (documento assente dai top-5): 0 (0.0%)
+ERRORE: 0
+Tempo totale: 1.72 s
+
+======================================================================
+DETTAGLIO
+======================================================================
+
+[GS001] Entro quanto tempo il titolare deve notificare una violazione dei dati personali all'autorità di controllo?
+  Atteso: GDPR, art. 33
+  Top-1: [GDPR, art. 33] score=0.7962
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS002] In quali casi è obbligatorio designare un responsabile della protezione dei dati?
+  Atteso: GDPR, art. 37
+  Top-1: [GDPR, art. 37] score=0.7271
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS003] Quali sono i principi applicabili al trattamento dei dati personali?
+  Atteso: GDPR, art. 5
+  Top-1: [GDPR, art. 5] score=0.7653
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS004] Che cosa prevede il diritto all'oblio?
+  Atteso: GDPR, art. 17
+  Top-1: [GDPR, art. 17] score=0.587
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS005] Quando è necessaria una valutazione d'impatto sulla protezione dei dati?
+  Atteso: GDPR, art. 35
+  Top-1: [GDPR, art. 35] score=0.7691
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS006] A quanto possono arrivare le sanzioni amministrative pecuniarie più alte previste dal GDPR?
+  Atteso: GDPR, art. 83
+  Top-1: [GDPR, art. 83] score=0.7078
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS007] Quali informazioni deve contenere il registro delle attività di trattamento tenuto dal titolare?
+  Atteso: GDPR, art. 30
+  Top-1: [GDPR, art. 30] score=0.7573
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS008] Quali sono le scadenze per segnalare un incidente significativo secondo la NIS2?
+  Atteso: NIS2, art. 23
+  Top-1: [NIS2, art. 23] score=0.7102
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS009] Quali misure di gestione dei rischi di cibersicurezza devono adottare i soggetti essenziali e importanti?
+  Atteso: NIS2, art. 21
+  Top-1: [NIS2, considerando 81-88] score=0.7848
+  Rank documento: 1 | rank esatto: 4
+  Esito: PARZIALE
+    1. [NIS2, considerando 81-88] score=0.7848
+    2. [NIS2, art. 20] score=0.7588
+    3. [NIS2, considerando 78-80] score=0.7044
+    4. [NIS2, art. 21] score=0.6905
+    5. [NIS2, considerando 89-90] score=0.6571
+
+[GS010] Che responsabilità hanno gli organi di gestione secondo la NIS2?
+  Atteso: NIS2, art. 20
+  Top-1: [NIS2, art. 20] score=0.6633
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS011] Quali sanzioni massime sono previste dalla NIS2 per i soggetti essenziali?
+  Atteso: NIS2, art. 34
+  Top-1: [NIS2, art. 34] score=0.6421
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS012] Quali pratiche di intelligenza artificiale sono vietate?
+  Atteso: AI Act, art. 5
+  Top-1: [AI Act, art. 5] score=0.7051
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS013] Che cosa si intende con alfabetizzazione in materia di IA e chi deve garantirla?
+  Atteso: AI Act, art. 4
+  Top-1: [AI Act, art. 4] score=0.6895
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS014] Quando un sistema di IA è considerato ad alto rischio?
+  Atteso: AI Act, art. 6
+  Top-1: [AI Act, art. 6] score=0.7333
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS015] Quali obblighi hanno i deployer dei sistemi di IA ad alto rischio?
+  Atteso: AI Act, art. 26
+  Top-1: [AI Act, art. 26] score=0.7663
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK
+
+[GS016] Quali obblighi di trasparenza valgono per chatbot e contenuti generati come i deep fake?
+  Atteso: AI Act, art. 50
+  Top-1: [AI Act, considerando 133-135] score=0.674
+  Rank documento: 1 | rank esatto: 2
+  Esito: PARZIALE
+    1. [AI Act, considerando 133-135] score=0.674
+    2. [AI Act, art. 50] score=0.6148
+    3. [AI Act, considerando 136-138] score=0.5833
+    4. [AI Act, art. 13] score=0.5222
+    5. [AI Act, considerando 101-104] score=0.5151
+
+[GS017] A quanto ammontano le sanzioni per chi viola il divieto delle pratiche di IA vietate?
+  Atteso: AI Act, art. 99
+  Top-1: [AI Act, art. 99] score=0.6534
+  Rank documento: 1 | rank esatto: 1
+  Esito: OK

@@ -1,0 +1,32 @@
+======================================================================
+RISPOSTA LLM - RIEPILOGO (KB: demo)
+Eseguito il: 2026-10-29 15:37:40
+======================================================================
+
+Modello LLM: gemma3:4b
+Modello embedding: bge-m3
+Prompt: C
+Top-K: 3
+MIN_SCORE: None
+
+SET: golden
+----------------------------------------------------------------------
+Domande: 17
+Risposte generate dall'LLM: 17
+Risposte deterministiche (nessun chunk, LLM non chiamato): 0
+Errori: 0
+Risposte con citazioni inline non corrispondenti ai chunk recuperati: 0
+Dichiarate fuori dominio (possibili falsi negativi): 0
+
+Risultati: risposta_results_golden_demo_gemma3-4b_promptC_20261029_153740.csv
+
+SET: negative
+----------------------------------------------------------------------
+Domande: 5
+Risposte generate dall'LLM: 5
+Risposte deterministiche (nessun chunk, LLM non chiamato): 0
+Errori: 0
+Risposte con citazioni inline non corrispondenti ai chunk recuperati: 0
+Dichiarate correttamente fuori dominio: 5/5 (100.0%)
+
+Risultati: risposta_results_negative_demo_gemma3-4b_promptC_20261029_153740.csv

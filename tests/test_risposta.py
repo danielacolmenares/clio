@@ -41,7 +41,7 @@ def test_prompt_numerato_e_separato():
     b = risposta.costruisci_prompt("Entro quando?", chunk, "B")
     assert "rilevanza" not in b and "[GDPR, art. 33]" in b
     with pytest.raises(ValueError):
-        risposta.costruisci_prompt("x", chunk, "C")
+        risposta.costruisci_prompt("x", chunk, "Z")
 
 
 def test_fonti_aggiunte_in_modo_deterministico(base, servizi):
@@ -124,3 +124,22 @@ def test_esegui_set_mancante_saltato(base, servizi):
     assert risposta.esegui(kb, "entrambi") == 0
     report = next((base / "report").glob("risposta_report_demo_*.txt")).read_text(encoding="utf-8")
     assert "SET: golden - SALTATO" in report and "SET: negative - SALTATO" in report
+
+
+def test_prompt_c_rigido_contiene_frase_esempio_e_divieti():
+    from clio import risposta
+    p = risposta.costruisci_prompt("Qual e' l'aliquota IVA?", [], "C")
+    assert p.count(risposta.FRASE_FUORI_DOMINIO) >= 2  # regola + esempio di rifiuto
+    assert "anche se li conosci" in p
+    assert "[AI Act, art. 26]" in p
+
+
+def test_timeout_llm_configurabile(monkeypatch):
+    import importlib
+    from clio import clienti
+    monkeypatch.setenv("CLIO_TIMEOUT_LLM", "900")
+    importlib.reload(clienti)
+    assert clienti.TIMEOUT_LLM == 900
+    monkeypatch.delenv("CLIO_TIMEOUT_LLM")
+    importlib.reload(clienti)
+    assert clienti.TIMEOUT_LLM == 600
